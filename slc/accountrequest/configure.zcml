@@ -1,5 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:grok="http://namespaces.zope.org/grok"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="slc.accountrequest">
 
@@ -7,10 +8,14 @@
         name="default"
         title="slc.accountrequest"
         directory="profiles/default"
-        description="Mail Router Default Setup"
+        description="Account Request Default Setup"
         provides="Products.GenericSetup.interfaces.EXTENSION"
         />
 
     <include package=".browser" />
+    <grok:grok package="." />
+
+    <!-- email to id behaviour -->
+    <adapter factory=".adapters.NameFromEmail" />
 
 </configure>
