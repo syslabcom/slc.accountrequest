@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<layers>
+    <layer
+        name="slc.accountrequest"
+        interface="slc.accountrequest.interfaces.IAccountRequestInstalled" />
+</layers>
