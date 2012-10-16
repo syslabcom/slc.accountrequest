@@ -12,10 +12,6 @@ class IRequestSchema(IRegisterSchema, form.Schema):
     """ This extends plone.app.users.userdataschema.IRegisterSchema and makes
         it available to dexterity, so we can create objects with this schema.
     """
-    title = schema.TextLine(
-        title = _(u'label_title', default=u'Title'),
-        required = True)
-
     fullname = schema.TextLine(
         title=_(u'label_full_name', default=u'Full Name'),
         description=_(u'help_full_name_creation',
@@ -29,5 +25,4 @@ class IRequestSchema(IRegisterSchema, form.Schema):
 
     form.order_before(email = '*')
     form.order_before(fullname = '*')
-    form.order_before(title = '*')
-    form.omitted('title', 'mail_me')
+    form.omitted('mail_me')
