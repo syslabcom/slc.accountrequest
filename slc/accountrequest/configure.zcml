@@ -18,4 +18,10 @@
     <!-- email to id behaviour -->
     <adapter factory=".adapters.NameFromEmail" />
 
+    <!-- custom permissions -->
+    <permission
+        id="slc.accountrequest.ApproveAccount"
+        title="Approve account"
+        />
+
 </configure>

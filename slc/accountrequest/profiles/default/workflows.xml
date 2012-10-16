@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<object name="portal_workflow">
+ <object name="accountrequest_workflow" meta_type="Workflow"/>
+ <bindings>
+  <type type_id="slc.accountrequest.request">
+      <bound-workflow workflow_id="accountrequest_workflow" />
+  </type>
+ </bindings>
+</object>
