@@ -13,7 +13,7 @@ grok.templatedir('.')
 
 class RegistrationView(form.SchemaForm):
     grok.name('slc.accountrequest.register')
-    grok.require('zope2.View')
+    grok.require('zope2.AccessContentsInformation')
     grok.context(IFolderish)
 
     schema = IRequestSchema

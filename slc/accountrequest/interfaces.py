@@ -26,3 +26,6 @@ class IRequestSchema(IRegisterSchema, form.Schema):
     form.order_before(email = '*')
     form.order_before(fullname = '*')
     form.omitted('mail_me')
+
+class IRequestFolderSchema(form.Schema):
+    """ Folderish object for holding registration requests. """

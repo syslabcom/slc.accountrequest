@@ -24,4 +24,11 @@
         title="Approve account"
         />
 
+    <!-- event handlers -->
+    <subscriber
+        for="slc.accountrequest.interfaces.IRequestSchema
+        Products.DCWorkflow.interfaces.IBeforeTransitionEvent"
+        handler=".eventhandlers.createAccount"
+        />   
+
 </configure>
