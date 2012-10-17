@@ -33,6 +33,11 @@
         for="slc.accountrequest.interfaces.IRequestSchema
         Products.DCWorkflow.interfaces.IBeforeTransitionEvent"
         handler=".eventhandlers.createAccount"
-        />   
+        />
+    <subscriber
+        for="slc.accountrequest.interfaces.IRequestSchema
+        Products.DCWorkflow.interfaces.IAfterTransitionEvent"
+        handler=".eventhandlers.notifyAccountCreated"
+        />
 
 </configure>
