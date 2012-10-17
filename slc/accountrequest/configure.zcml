@@ -23,6 +23,10 @@
         id="slc.accountrequest.ApproveAccount"
         title="Approve account"
         />
+    <permission
+        id="slc.accountrequest.RequestAccount"
+        title="Request account"
+        />
 
     <!-- event handlers -->
     <subscriber
