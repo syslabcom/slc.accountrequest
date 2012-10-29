@@ -1,0 +1,65 @@
+<html metal:use-macro="here/main_template/macros/master"
+      i18n:domain="slc.mailrouter" >
+    <head>
+        <metal:script fill-slot="javascript_head_slot">
+            <script type="text/javascript">
+                jQuery(function($){
+                    $('.approvebutton, .rejectbutton').bind('click', function(e){
+                        var $target = $(e.target),
+                            id = $(e.target).closest('td').attr('data-id'),
+                            action = $target.closest('a').is('.approvebutton')?'approve':'reject';
+
+                        $.ajax({
+                          url: 'slc.accountrequest.approve',
+                          type: 'POST',
+                          data: {id: id, action: action},
+                          dataType: 'json',
+                          success: function(data){
+                            if(data.status === 'ok'){
+                                $target.closest('tr').remove();
+                            }
+                          }
+                        });
+
+                    });
+                });
+            </script>
+        </metal:script>
+    </head>
+    <body>
+        <div id="content-core" metal:fill-slot="main">
+        <div tal:replace="structure provider:plone.abovecontenttitle" />
+
+        <h1 i18n:translate="">Pending account requests</h1>
+        <div tal:replace="structure provider:plone.belowcontenttitle" />
+
+        <div tal:replace="structure provider:plone.abovecontentbody" />
+
+        <tal:d define="pending view/pending">
+            <form action="" method="post" tal:condition="pending">
+            <table class="listing">
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+            <tal:r repeat="brain pending">
+                <tr tal:define="ar brain/getObject">
+                    <td tal:content="ar/fullname">fullname</td>
+                    <td tal:content="ar/email">email</td>
+                    <td tal:attributes="data-id ar/id">
+                        <a class="approvebutton" href="javascript:;"><img tal:attributes="src string:${context/plone_portal_state/portal_url}/++resource++slc.accountrequest/thumb_up.png" alt="Approve" title="Approve" /></a>
+                        <a class="rejectbutton" href="javascript:;"><img tal:attributes="src string:${context/plone_portal_state/portal_url}/++resource++slc.accountrequest/thumb_down.png" alt="Reject" title="Reject" /></a>
+                    </td>
+                </tr>
+            </tal:r>
+            </table>
+            <input type="submit" value="Submit" />
+            </form>
+        </tal:d>
+
+        <div tal:replace="structure provider:plone.belowcontentbody" />
+
+        </div>
+    </body>
+</html>

@@ -1,12 +1,14 @@
+import json
 from five import grok
 from Products.Five import BrowserView
 from plone.directives import form
 from plone.dexterity.utils import createContentInContainer
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.CMFCore.interfaces import IFolderish
+from Products.CMFCore.utils import getToolByName
 from Products.statusmessages.interfaces import IStatusMessage
 from z3c.form import button
-from slc.accountrequest.interfaces import IRequestSchema
+from slc.accountrequest.interfaces import IRequestSchema, IRequestFolderSchema
 from slc.accountrequest import MessageFactory as _
 
 grok.templatedir('.')
@@ -14,7 +16,7 @@ grok.templatedir('.')
 class RegistrationView(form.SchemaForm):
     grok.name('slc.accountrequest.register')
     grok.require('zope2.AccessContentsInformation')
-    grok.context(IFolderish)
+    grok.context(IRequestFolderSchema)
 
     schema = IRequestSchema
     ignoreContext = True
@@ -56,9 +58,45 @@ class RegistrationView(form.SchemaForm):
             '@@plone_portal_state').portal_url()
         self.request.response.redirect(portal_url)
 
-class ApprovalView(grok.View):
+class ReviewView(grok.View):
     """ View for approving account requests. """
+    grok.name('slc.accountrequest.review')
+    grok.require('cmf.ManagePortal')
+    grok.context(IRequestFolderSchema)
+    grok.template('review')
+
+    def pending(self):
+        pc = getToolByName(self.context, 'portal_catalog')
+        folder_path = '/'.join(self.context.getPhysicalPath())
+        return pc(portal_type='slc.accountrequest.request',
+            review_state='pending',
+            path={'query': folder_path, 'depth': 1})
+
+class ReviewActionView(grok.View):
+    """ View that takes a JSON request, and approves/rejects a request. """
     grok.name('slc.accountrequest.approve')
     grok.require('cmf.ManagePortal')
-    grok.context(IRequestSchema)
-    grok.template('approve')
+    grok.context(IRequestFolderSchema)
+
+    def render(self):
+        id = self.request['id']
+        action = self.request['action']
+
+        # XXX TODO, implement rejection
+        if action != 'approve':
+            return json.dumps({'status': 'fail'})
+
+        ob = self.context.get(id, None)
+
+        self.response.setHeader("Content-Type", "application/json")
+        if ob is not None:
+            # Change workflow state
+            wft = getToolByName(self.context, 'portal_workflow')
+            try:
+                wft.doActionFor(ob, 'create')
+                return json.dumps({'status': 'ok'})
+            except:
+                # XXX Log or somehow surface this error
+                pass
+
+        return json.dumps({'status': 'fail'})
