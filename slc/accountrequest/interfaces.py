@@ -1,4 +1,4 @@
-from zope.interface import Interface
+from zope.interface import Interface, invariant, Invalid
 from zope import schema
 from plone.directives import form
 from plone.app.users.browser.register import IRegisterSchema
@@ -7,6 +7,9 @@ from slc.accountrequest import MessageFactory as _
 class IAccountRequestInstalled(Interface):
     """Marker Interface used by as BrowserLayer
     """
+
+class PasswordsDoNotMatch(Invalid):
+    __doc__ = _(u"Passwords do not match")
 
 class IRequestSchema(IRegisterSchema, form.Schema):
     """ This extends plone.app.users.userdataschema.IRegisterSchema and makes
@@ -26,6 +29,11 @@ class IRequestSchema(IRegisterSchema, form.Schema):
     form.order_before(email = '*')
     form.order_before(fullname = '*')
     form.omitted('mail_me')
+
+    @invariant
+    def validatePassword(data):
+        if data.password != data.password_ctl:
+                raise PasswordsDoNotMatch(_(u"Password confirmation should match password."))
 
 class IRequestFolderSchema(form.Schema):
     """ Folderish object for holding registration requests. """
