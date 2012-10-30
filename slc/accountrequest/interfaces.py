@@ -37,3 +37,11 @@ class IRequestSchema(IRegisterSchema, form.Schema):
 
 class IRequestFolderSchema(form.Schema):
     """ Folderish object for holding registration requests. """
+
+class IRegistrationHandler(Interface):
+    """ Marker interface for utilities that know how to register
+        an account. """
+    def register(self, ob):
+        """ Method that does the actual registration. ``ob`` is the
+            content object carrying all the information you might
+            need. """

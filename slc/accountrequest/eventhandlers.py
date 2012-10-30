@@ -1,7 +1,9 @@
 import logging
 from zope.i18n import translate
 from zope.i18nmessageid import Message
+from zope.component import getAllUtilitiesRegisteredFor
 from Products.CMFCore.utils import getToolByName
+from slc.accountrequest.interfaces import IRegistrationHandler
 from slc.accountrequest import MessageFactory as _
 
 logger = logging.getLogger("slc.accountrequest.eventhandlers")
@@ -13,11 +15,12 @@ MAIL_NOTIFICATION_MESSAGE = _(
              "Password: ${password}\n")
 
 def createAccount(obj, event):
-    # TODO create account here
-    # Look up adapters, call them to do actual registration
+    # Transitioning from pending to created
     if event.new_state.id == 'created':
-        # Transitioning from pending to created
-        pass
+        # Look up utilities, call them to do actual registration
+        handlers = getAllUtilitiesRegisteredFor(IRegistrationHandler)
+        for handler in handlers:
+            handler.register(obj)
 
 def notifyAccountCreated(obj, event):
     if event.new_state.id == 'created':

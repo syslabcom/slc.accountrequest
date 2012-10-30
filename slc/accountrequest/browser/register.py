@@ -1,3 +1,4 @@
+import logging
 import json
 from five import grok
 from Products.Five import BrowserView
@@ -12,6 +13,7 @@ from slc.accountrequest.interfaces import IRequestSchema, IRequestFolderSchema
 from slc.accountrequest import MessageFactory as _
 
 grok.templatedir('.')
+logger = logging.getLogger("slc.accountrequest.browser.register")
 
 class RegistrationView(form.SchemaForm):
     grok.name('slc.accountrequest.register')
@@ -82,21 +84,26 @@ class ReviewActionView(grok.View):
         id = self.request['id']
         action = self.request['action']
 
-        # XXX TODO, implement rejection
-        if action != 'approve':
+        if action not in ('approve', 'reject'):
             return json.dumps({'status': 'fail'})
 
         ob = self.context.get(id, None)
 
         self.response.setHeader("Content-Type", "application/json")
         if ob is not None:
-            # Change workflow state
+            if action == 'reject':
+                self.context.manage_delObjects(ids=[id])
+                return json.dumps({'status': 'ok'})
+
+            # action==approve, change workflow state
             wft = getToolByName(self.context, 'portal_workflow')
             try:
                 wft.doActionFor(ob, 'create')
                 return json.dumps({'status': 'ok'})
             except:
-                # XXX Log or somehow surface this error
-                pass
+                logger.error('Exception while trying to approve account for' +
+                             '%s <%s>',
+                             ob.username,
+                             ob.email)
 
         return json.dumps({'status': 'fail'})
