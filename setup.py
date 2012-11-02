@@ -30,6 +30,7 @@ setup(
         'zope.component',
         'rwproperty',
         'Products.CMFPlone',
+        'five.grok'
     ],
     entry_points="""
         [z3c.autoinclude.plugin]
