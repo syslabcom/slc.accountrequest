@@ -32,7 +32,8 @@ setup(
         'rwproperty',
         'Products.CMFPlone',
         'Products.ATVocabularyManager',
-        'five.grok'
+        'five.grok',
+        'collective.dynatree'
     ],
     entry_points="""
         [z3c.autoinclude.plugin]

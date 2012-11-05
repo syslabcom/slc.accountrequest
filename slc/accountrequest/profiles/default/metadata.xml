@@ -3,5 +3,6 @@
     <version>1</version>
     <dependencies>
         <dependency>profile-Products.ATVocabularyManager:default</dependency>
+        <dependency>profile-collective.dynatree:default</dependency>
     </dependencies>
 </metadata>
