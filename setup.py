@@ -24,7 +24,7 @@ setup(
     install_requires=[
         'setuptools',
         'plone.behavior',
-        'plone.dexterity',
+        'plone.app.dexterity',
         'plone.directives.form',
         'zope.schema',
         'zope.interface',
