@@ -31,6 +31,7 @@ setup(
         'zope.component',
         'rwproperty',
         'Products.CMFPlone',
+        'Products.ATVocabularyManager',
         'five.grok'
     ],
     entry_points="""

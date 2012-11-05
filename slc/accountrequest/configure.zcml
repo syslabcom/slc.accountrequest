@@ -12,6 +12,15 @@
         provides="Products.GenericSetup.interfaces.EXTENSION"
         />
 
+    <genericsetup:importStep
+        name="name"
+        title="title"
+        description="description"
+        handler="slc.accountrequest.setuphandlers.importVocabularies">
+        <depends name="content"/>
+        <depends name="toolset"/>
+    </genericsetup:importStep>
+
     <include package=".browser" />
     <grok:grok package="." />
 
