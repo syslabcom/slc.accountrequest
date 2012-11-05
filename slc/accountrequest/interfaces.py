@@ -1,7 +1,6 @@
 from zope.interface import Interface, invariant, Invalid
 from zope import schema
 from plone.directives import form
-from plone.app.users.browser.register import IRegisterSchema
 from slc.accountrequest import MessageFactory as _
 
 class IAccountRequestInstalled(Interface):
@@ -11,7 +10,7 @@ class IAccountRequestInstalled(Interface):
 class PasswordsDoNotMatch(Invalid):
     __doc__ = _(u"Passwords do not match")
 
-class IRequestSchema(IRegisterSchema, form.Schema):
+class IRequestSchema(form.Schema):
     """ This extends plone.app.users.userdataschema.IRegisterSchema and makes
         it available to dexterity, so we can create objects with this schema.
     """
@@ -51,10 +50,29 @@ class IRequestSchema(IRegisterSchema, form.Schema):
                       default=u"Tick if you want to receive statistics."),
         required=False)
 
+    username = schema.ASCIILine(
+        title=_(u'label_user_name', default=u'User Name'),
+        description=_(u'help_user_name_creation_casesensitive',
+                      default=u"Enter a user name, usually something "
+                               "like 'jsmith'. "
+                               "No spaces or special characters. "
+                               "Usernames and passwords are case sensitive, "
+                               "make sure the caps lock key is not enabled. "
+                               "This is the name used to log in."))
+
+    password = schema.Password(
+        title=_(u'label_password', default=u'Password'),
+        description=_(u'help_password_creation',
+                      default=u'Minimum 5 characters.'))
+
+    password_ctl = schema.Password(
+        title=_(u'label_confirm_password',
+                default=u'Confirm password'),
+        description=_(u'help_confirm_password',
+                      default=u"Re-enter the password. "
+                      "Make sure the passwords are identical."))
+
     #form.widget(sector='collective.dynatree.widget.DynatreeWidget')
-    form.order_before(email = '*')
-    form.order_before(fullname = '*')
-    form.omitted('mail_me')
 
     @invariant
     def validatePassword(data):
