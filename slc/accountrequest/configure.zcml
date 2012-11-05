@@ -21,6 +21,7 @@
         <depends name="toolset"/>
     </genericsetup:importStep>
 
+    <include package="five.grok" />
     <include package=".browser" />
     <grok:grok package="." />
 
