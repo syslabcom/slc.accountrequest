@@ -19,13 +19,39 @@ class IRequestSchema(IRegisterSchema, form.Schema):
         title=_(u'label_full_name', default=u'Full Name'),
         description=_(u'help_full_name_creation',
                       default=u"Enter full name, e.g. John Smith."),
-        required=False)
+        required=True)
 
     email = schema.ASCIILine(
         title=_(u'label_email', default=u'E-mail'),
         description=u'',
         required=True)
 
+    organisation = schema.TextLine(
+        title=_(u'label_organisation', default=u'Organisation'),
+        description=_(u'help_organisation_creation',
+                      default=u"Enter the name of your organisation."),
+        required=True)
+
+    #sector = schema.Choice(
+    #    vocabulary=u"NACE",
+    #    title=_(u'label_sector', default=u'Sector'),
+    #    description=_(u'help_sector_creation',
+    #                  default=u"Select the relevant NACE code."),
+    #    required=True)
+
+    country_manager = schema.Bool(
+        title=_(u'label_country_manager', default=u'Country Manager account required'),
+        description=_(u'help_country_manager_creation',
+                      default=u"Tick if you require a country manager account."),
+        required=False)
+
+    receive_statistics = schema.Bool(
+        title=_(u'label_receive_statistics', default=u'Receive statistics'),
+        description=_(u'help_receive_statistics_creation',
+                      default=u"Tick if you want to receive statistics."),
+        required=False)
+
+    #form.widget(sector='collective.dynatree.widget.DynatreeWidget')
     form.order_before(email = '*')
     form.order_before(fullname = '*')
     form.omitted('mail_me')
