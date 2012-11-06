@@ -1,6 +1,11 @@
-from zope.interface import Interface, invariant, Invalid
+from zope.component import adapter
+from zope.interface import Interface, invariant, Invalid, implementer
 from zope import schema
 from plone.directives import form
+from z3c.form.interfaces import IFormLayer, IFieldWidget
+from z3c.form.widget import FieldWidget
+from collective.dynatree.widget import DynatreeWidget
+from slc.accountrequest.utils import WrappedATVocabulary
 from slc.accountrequest import MessageFactory as _
 
 class IAccountRequestInstalled(Interface):
@@ -9,6 +14,12 @@ class IAccountRequestInstalled(Interface):
 
 class PasswordsDoNotMatch(Invalid):
     __doc__ = _(u"Passwords do not match")
+
+@adapter(schema.interfaces.IField, IFormLayer)
+@implementer(IFieldWidget)
+def TreeFieldWidget(field, request):
+    """ IFieldWidget factory for DynatreeWidget """
+    return FieldWidget(field, DynatreeWidget(request))
 
 class IRequestSchema(form.Schema):
     """ This extends plone.app.users.userdataschema.IRegisterSchema and makes
@@ -31,12 +42,12 @@ class IRequestSchema(form.Schema):
                       default=u"Enter the name of your organisation."),
         required=True)
 
-    #sector = schema.Choice(
-    #    vocabulary=u"NACE",
-    #    title=_(u'label_sector', default=u'Sector'),
-    #    description=_(u'help_sector_creation',
-    #                  default=u"Select the relevant NACE code."),
-    #    required=True)
+    sector = schema.Choice(
+        vocabulary=u'slc.accountrequest.sector',
+        title=_(u'label_sector', default=u'Sector'),
+        description=_(u'help_sector_creation',
+                      default=u"Select the relevant NACE code."),
+        required=True)
 
     country_manager = schema.Bool(
         title=_(u'label_country_manager', default=u'Country Manager account required'),
@@ -72,7 +83,7 @@ class IRequestSchema(form.Schema):
                       default=u"Re-enter the password. "
                       "Make sure the passwords are identical."))
 
-    #form.widget(sector='collective.dynatree.widget.DynatreeWidget')
+    #form.widget(sector=TreeFieldWidget)
 
     @invariant
     def validatePassword(data):
