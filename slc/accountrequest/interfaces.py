@@ -5,7 +5,6 @@ from plone.directives import form
 from z3c.form.interfaces import IFormLayer, IFieldWidget
 from z3c.form.widget import FieldWidget
 from collective.dynatree.widget import DynatreeWidget
-from slc.accountrequest.utils import WrappedATVocabulary
 from slc.accountrequest import MessageFactory as _
 
 class IAccountRequestInstalled(Interface):
