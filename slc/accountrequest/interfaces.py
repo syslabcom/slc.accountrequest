@@ -4,7 +4,7 @@ from zope import schema
 from plone.directives import form
 from z3c.form.interfaces import IFormLayer, IFieldWidget
 from z3c.form.widget import FieldWidget
-from collective.dynatree.dexterity_widget import DynatreeFieldWidget
+from collective.dynatree.dexterity_widget import DynatreeWidget
 from slc.accountrequest import MessageFactory as _
 
 
@@ -15,6 +15,16 @@ class IAccountRequestInstalled(Interface):
 
 class PasswordsDoNotMatch(Invalid):
     __doc__ = _(u"Passwords do not match")
+
+
+@adapter(schema.interfaces.IField, IFormLayer)
+@implementer(IFieldWidget)
+def TreeFieldWidget(field, request):
+    """ IFieldWidget factory for DynatreeWidget """
+    widget = DynatreeWidget(request)
+    widget.leafsOnly = False
+    widget.showKey = True
+    return FieldWidget(field, widget)
 
 
 class IRequestSchema(form.Schema):
@@ -79,7 +89,7 @@ class IRequestSchema(form.Schema):
                       default=u"Re-enter the password. "
                       "Make sure the passwords are identical."))
 
-    form.widget(sector=DynatreeFieldWidget)
+    form.widget(sector=TreeFieldWidget)
 
     @invariant
     def validatePassword(data):
