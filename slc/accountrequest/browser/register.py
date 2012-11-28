@@ -20,6 +20,7 @@ class RegistrationView(form.SchemaForm):
     grok.require('zope2.AccessContentsInformation')
     grok.context(IRequestFolderSchema)
 
+    portal_type = u"slc.accountrequest.request"
     schema = IRequestSchema
     ignoreContext = True
 
