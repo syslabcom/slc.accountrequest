@@ -47,7 +47,7 @@
             <tal:r repeat="brain pending">
                 <tr tal:define="ar brain/getObject">
                     <td tal:content="ar/fullname">fullname</td>
-                    <td tal:content="ar/email">email</td>
+                    <td><a href="#" tal:attributes="href ar/absolute_url" tal:content="ar/email">email</a></td>
                     <td tal:attributes="data-id ar/id">
                         <a class="approvebutton" href="javascript:;"><img tal:attributes="src string:${context/plone_portal_state/portal_url}/++resource++slc.accountrequest/thumb_up.png" alt="Approve" title="Approve" /></a>
                         <a class="rejectbutton" href="javascript:;"><img tal:attributes="src string:${context/plone_portal_state/portal_url}/++resource++slc.accountrequest/thumb_down.png" alt="Reject" title="Reject" /></a>
