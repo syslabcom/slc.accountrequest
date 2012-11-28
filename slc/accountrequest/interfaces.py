@@ -4,21 +4,18 @@ from zope import schema
 from plone.directives import form
 from z3c.form.interfaces import IFormLayer, IFieldWidget
 from z3c.form.widget import FieldWidget
-from collective.dynatree.widget import DynatreeWidget
+from collective.dynatree.dexterity_widget import DynatreeFieldWidget
 from slc.accountrequest import MessageFactory as _
+
 
 class IAccountRequestInstalled(Interface):
     """Marker Interface used by as BrowserLayer
     """
 
+
 class PasswordsDoNotMatch(Invalid):
     __doc__ = _(u"Passwords do not match")
 
-@adapter(schema.interfaces.IField, IFormLayer)
-@implementer(IFieldWidget)
-def TreeFieldWidget(field, request):
-    """ IFieldWidget factory for DynatreeWidget """
-    return FieldWidget(field, DynatreeWidget(request))
 
 class IRequestSchema(form.Schema):
     """ This extends plone.app.users.userdataschema.IRegisterSchema and makes
@@ -82,15 +79,17 @@ class IRequestSchema(form.Schema):
                       default=u"Re-enter the password. "
                       "Make sure the passwords are identical."))
 
-    #form.widget(sector=TreeFieldWidget)
+    form.widget(sector=DynatreeFieldWidget)
 
     @invariant
     def validatePassword(data):
         if data.password != data.password_ctl:
                 raise PasswordsDoNotMatch(_(u"Password confirmation should match password."))
 
+
 class IRequestFolderSchema(form.Schema):
     """ Folderish object for holding registration requests. """
+
 
 class IRegistrationHandler(Interface):
     """ Marker interface for utilities that know how to register
